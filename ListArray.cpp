@@ -21,6 +21,10 @@ public:
     void merge(int,int,int);
 };
 
+ListArray::~ListArray(){
+    delete[] arr;
+}
+
 void ListArray::insert(int pos,int dato){
     int *temp = new int[++size];
 
@@ -31,6 +35,7 @@ void ListArray::insert(int pos,int dato){
             *(temp+i) = *(arr+(j++));
         }
     }
+    delete[] arr;
     arr = temp;
 }
 
@@ -46,6 +51,7 @@ void ListArray::in_order(int dato){
     for (int j=aux++, i=aux; i<size; i++, j++){
         *(temp+i) = *(arr+j);
     }
+    delete[] arr;
     arr = temp;
 }
 
@@ -53,30 +59,26 @@ void ListArray::remove(int pos){
     int *temp = new int[--size];
 
     for (int i=0, j=0; i<size; i++, j++){
-        if (i == pos){
-            j++;
-        }
+        if (i == pos){ j++; }
         *(temp+i) = *(arr+j);
     }
+    delete[] arr;
     arr = temp;
 }
 
 bool ListArray::search(int dato){
-    int ini=0,fin=size, medio=(ini+fin)/2;
-    while (medio < fin){
-        if (dato == *(arr+medio)){
-            cout<<"El dato se encuentra en la posicion "<<medio<<" del arreglo"<<endl;
+    int ini=0,fin=size, mitad=(ini+fin)/2;
+    while (mitad <= fin){
+        if (dato == *(arr+mitad)){
+            cout<<"El dato se encuentra en la posicion "<<mitad<<" del arreglo"<<endl;
             return 1;
         }
-        if (dato < *(arr+medio)){
-            fin = medio;
+        if (dato < *(arr+mitad)){
+            fin = mitad;
         } else {
-            ini = medio;
+            ini = mitad;
         }
-        medio = (ini+fin)/2;
-        if (medio == ini){
-            medio++;
-        }
+        mitad = (ini+fin)/2;
     }
     cout<<"El dato no se encuentra en el arreglo"<<endl;
     return 0;
@@ -134,7 +136,7 @@ void ListArray::mergesort(int izq,int der){
 
 int main()
 {
-    int n = 10000;
+    int n = 10;
     int *nums = new int[n];
     for (int i=1; i<=n; i++){
         //cout<<"Ingrese dato: ";
@@ -171,8 +173,11 @@ int main()
             L1->print(); break;
         case 6:
             pos = L1->get_size();
-            L1->mergesort(1,pos); break;
+            L1->mergesort(0,pos); break;
         default: break;
         }
     } while (opc != 7);
+
+    delete[] nums;
+    delete L1;
 }
