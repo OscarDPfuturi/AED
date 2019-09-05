@@ -8,22 +8,29 @@ class ListArray{
 public:
     ListArray() : size(0){};
     ListArray(int _size,int *_arr){size = _size;arr = _arr;}
-    ~ListArray();
+    ~ListArray(){delete[] arr;}
 
     int get_size(){return size;}
 
     void insert(int,int);
     void in_order(int);
     void remove(int);
-    bool search(int);
     void print();
+
+    //busqueda...
+    bool linear_search(int);
+    bool binary_search(int);
+
+    //ordenamiento...
+    void insertsort();
+
+    void quicksort(int,int);
+    int divide(int,int);
+    void swap(int*,int*);
+
     void mergesort(int,int);
     void merge(int,int,int);
 };
-
-ListArray::~ListArray(){
-    delete[] arr;
-}
 
 void ListArray::insert(int pos,int dato){
     int *temp = new int[++size];
@@ -66,7 +73,24 @@ void ListArray::remove(int pos){
     arr = temp;
 }
 
-bool ListArray::search(int dato){
+void ListArray::print(){
+    for (int i=0; i<size; i++){
+        cout<<*(arr+i)<<" ";
+    }
+    cout<<"\n";
+}
+
+bool ListArray::linear_search(int dato){
+    for (int i=0; i<size; i++){
+        if (dato == *(arr+i)){
+            cout<<"El dato esta en la posicion "<<i<<endl;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+bool ListArray::binary_search(int dato){
     int ini=0,fin=size, mitad=(ini+fin)/2;
     while (mitad <= fin){
         if (dato == *(arr+mitad)){
@@ -84,11 +108,44 @@ bool ListArray::search(int dato){
     return 0;
 }
 
-void ListArray::print(){
+void ListArray::insertsort(){
     for (int i=0; i<size; i++){
-        cout<<*(arr+i)<<" ";
+        for (int j=i; j>=0; j--){
+            if (*(arr+j) > *(arr+j+1)){
+                int aux = *(arr+j);
+                *(arr+j) = *(arr+j);
+                *(arr+j) = aux;
+            }
+        }
     }
-    cout<<"\n";
+}
+
+void ListArray::swap(int* a, int* b){
+    int c = *a;
+    *a = *b;
+    *b = c;
+}
+
+int ListArray::divide(int izq, int der){
+    int pivot = arr[der];
+    int i = (izq - 1);
+
+    for (int j=izq; j <= der-1; j++){
+        if (arr[j] < pivot){
+            i++;
+            swap(&arr[i], &arr[j]);
+        }
+    }
+    swap(&arr[i+1], &arr[der]);
+    return (i + 1);
+}
+
+void ListArray::quicksort(int izq, int der){
+    if (izq < der){
+        int pi = divide(izq, der);
+        quicksort(izq, pi - 1);
+        quicksort(pi + 1, der);
+    }
 }
 
 void ListArray::merge(int izq,int m,int der){
@@ -143,7 +200,7 @@ int main()
         *(nums+i-1) = i;
     }
     ListArray *L1 = new ListArray(n,nums);
-    //L1->print();
+    L1->print();
     int opc, pos, dato;
     cout<<"Elija una opcion: "<<endl;
     do {
@@ -168,7 +225,7 @@ int main()
             L1->remove(pos); break;
         case 4:
             cout<<"Numero: "; cin>>dato;
-            L1->search(dato); break;
+            L1->binary_search(dato); break;
         case 5:
             L1->print(); break;
         case 6:
