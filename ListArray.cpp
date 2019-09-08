@@ -1,4 +1,10 @@
 #include <iostream>
+#include <stdlib.h>
+#include <time.h>
+#include <ctime>
+#include <thread>
+
+unsigned t0, t1;
 
 using namespace std;
 
@@ -24,11 +30,11 @@ public:
     //ordenamiento...
     void insertsort();
 
-    void quicksort(int,int);
+    void quicksort(int,int);//indices del array inicio y fin (0,size-1)
     int divide(int,int);
     void swap(int*,int*);
 
-    void mergesort(int,int);
+    void mergesort(int,int);//indices inicio y fin
     void merge(int,int,int);
 };
 
@@ -195,13 +201,20 @@ int main()
 {
     int n = 10;
     int *nums = new int[n];
+    srand(time(NULL));
     for (int i=1; i<=n; i++){
-        //cout<<"Ingrese dato: ";
-        *(nums+i-1) = i;
+        *(nums+i-1) = 1+rand()%(n-1);
     }
     ListArray *L1 = new ListArray(n,nums);
-    L1->print();
-    int opc, pos, dato;
+    //L1->print();
+    t0 = clock();
+    L1->quicksort(0,n-1);
+    t1 = clock();
+
+    double time = (double(t1-t0)/CLOCKS_PER_SEC);
+    cout<< time <<endl;
+
+    /*int opc, pos, dato;
     cout<<"Elija una opcion: "<<endl;
     do {
         cout<<"1.Insertar"<<endl;
@@ -233,7 +246,7 @@ int main()
             L1->mergesort(0,pos); break;
         default: break;
         }
-    } while (opc != 7);
+    } while (opc != 7);*/
 
     delete[] nums;
     delete L1;
