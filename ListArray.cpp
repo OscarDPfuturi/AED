@@ -93,6 +93,7 @@ bool ListArray::linear_search(int dato){
             return 1;
         }
     }
+    cout<<"El dato no se encuentra en el arreglo"<<endl;
     return 0;
 }
 
@@ -100,7 +101,7 @@ bool ListArray::binary_search(int dato){
     int ini=0,fin=size, mitad=(ini+fin)/2;
     while (mitad <= fin){
         if (dato == *(arr+mitad)){
-            cout<<"El dato se encuentra en la posicion "<<mitad<<" del arreglo"<<endl;
+            cout<<"El dato se encuentra en la posicion "<<mitad<<endl;
             return 1;
         }
         if (dato < *(arr+mitad)){
@@ -197,9 +198,56 @@ void ListArray::mergesort(int izq,int der){
     }
 }
 
+
+void Merge(int *A,int izq,int m,int der){
+    int i,j,k;
+    int n1 = m - izq + 1;
+    int n2 = der - m;
+    int L[n1], R[n2];
+
+    for (i=0; i<n1; i++){
+        L[i] = A[izq+i];
+    }
+    for (j=0; j<n2; j++){
+        R[j] = A[m+j+1];
+    }
+
+    i = 0; j = 0; k = izq;
+    while (i < n1 && j < n2){
+        if (L[i] <= R[j]){
+            A[k] = L[i];
+            i++;
+        } else {
+            A[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+    while (i < n1){
+        A[k] = L[i];
+        i++; k++;
+    }
+    while (j < n2){
+        A[k] = R[j];
+        j++; k++;
+    }
+}
+
+void MergeSort(int *A,int izq,int der){
+
+    if (izq < der){
+        int medio = (der + izq)/2;
+        MergeSort(A,izq,medio);
+        MergeSort(A,medio+1,der);
+        Merge(A,izq,medio,der);
+    }
+    this_thread::sleep_for(chrono::milliseconds(1000));
+}
+
 int main()
 {
-    int n = 10;
+
+    int n = 1000000;
     int *nums = new int[n];
     srand(time(NULL));
     for (int i=1; i<=n; i++){
@@ -208,8 +256,11 @@ int main()
     ListArray *L1 = new ListArray(n,nums);
     //L1->print();
     t0 = clock();
-    L1->quicksort(0,n-1);
+    //L1->quicksort(0,n-1);
+    thread th(MergeSort,nums,0,n-1);
+    //th.join();
     t1 = clock();
+
 
     double time = (double(t1-t0)/CLOCKS_PER_SEC);
     cout<< time <<endl;
